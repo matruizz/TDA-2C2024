@@ -29,7 +29,7 @@ int main() {
     //Manera correcta de comparar dos numeros flotantes entre si
     double a, b;
     long double e = 1e-9;
-    if (abs(a-b) < e) {
+    if (abs(a-b) < e) { 
         // a and b are equal
     }
 }
