@@ -8,7 +8,7 @@ class DisjointSet {
 
     vector<int> rank, parent;
 public:
-    DisjointSet(int n) {
+    DisjointSet(int &n) {
         rank.resize(n + 1, 0);
         parent.resize(n + 1);
         for(int i = 0; i < n + 1; i++){
@@ -17,7 +17,7 @@ public:
     }
 
     //Find implementado con path compression
-    int findSet(int node){
+    int findSet(int &node){
 
         // En caso que nodo sea el representante
         if (node == parent[node]) return node;
@@ -28,7 +28,7 @@ public:
         return parent[node] = findSet(parent[node]);
     }
 
-    void unionByRank(int u, int v) {
+    void unionByRank(int &u, int &v) {
         int uRepresentative = findSet(u);
         int vRepresentative = findSet(v);
 
@@ -48,7 +48,37 @@ public:
     }
 };
 
-bool comp(tuple<int, int, int> a, tuple<int, int, int> b){
+void crearGPrima(vector<tuple<int, int, int, int> E, int &i, DisjointSet &dsu){
+
+    set<pair<int, int>> lAdyacencias;
+    int u = std::get<0>(E[i]);
+    int v = std::get<1>(E[i]);
+    int it = 0;
+    while ( std::get<2>(E[i]) == std::get<2>(E[i + it]))
+    {
+        //Si tienen el mismo representante
+        if (dsu.findSet(u) == dsu.findSet(v))
+        {
+            std::get<2>(E[i]) = 2;  //ONE
+        }else{
+            lAdyacencias.insert(makepair<>);
+        }
+
+        it++;
+    }
+    it--;
+
+
+
+
+    i = i + it;
+    
+
+
+
+}
+
+bool compDePeso(tuple<int, int, int, int> &a, tuple<int, int, int, int> &b){
 
     if (std::get<2>(a) <= std::get<2>(b))
     {
@@ -58,11 +88,21 @@ bool comp(tuple<int, int, int> a, tuple<int, int, int> b){
     }
 }
 
-void kruskal(vector<tuple<int, int, int>> &E, int n){
+bool compDePosicion(tuple<int, int, int, int> &a, tuple<int, int, int, int> &b){
+
+    if (std::get<3>(a) <= std::get<3>(b))
+    {
+        return true;
+    }else{
+        return false;
+    }
+}
+
+void kruskal(vector<tuple<int, int, int, int>> &E, int &n){
 
     long long res = 0;
 
-    sort(E.begin(), E.end(), comp);
+    sort(E.begin(), E.end(), compDePeso);
 
     DisjointSet dsu = DisjointSet(n);
 
@@ -70,25 +110,27 @@ void kruskal(vector<tuple<int, int, int>> &E, int n){
     
     for(int i = 0; i < E.size(); i++){
         
-        int u1 = std::get<0>E[i];
-        int v1 = std::get<1>E[i];
-        int w1 = std::get<2>E[i];
+        int u1 = std::get<0>(E[i]);
+        int v1 = std::get<1>(E[i]);
+        int w1 = std::get<2>(E[i]);
 
         if (i < (E.size() - 1))
         {
-            int u2 = std::get<0>E[(i + 1)];
-            int v2 = std::get<1>E[(i + 1)];
-            int w2 = std::get<2>E[(i + 1)];
+            int u2 = std::get<0>(E[(i + 1)]);
+            int v2 = std::get<1>(E[(i + 1)]);
+            int w2 = std::get<2>(E[(i + 1)]);
 
             //u y v estan en distinta componente conexa y la arista tiene peso distinto a la siguiente?
             if( (dsu.findSet(u1) != dsu.findSet(v1)) && (w1 != w2) ){
                 dsu.unionByRank(u1, v1);
                 res += w1;
                 aristas++;
+                std::get<2>(E[i]) = 0;  //AT LEAST ONE
 
             //u y v estan en distinta componente conexa y la arista tiene igual peso a la siguiente
             }else if( (dsu.findSet(u1) != dsu.findSet(v1)) && (w1 == w2)){
                 //crear g'
+
                 //correr puentes en g'
             }
         }else{
@@ -97,6 +139,7 @@ void kruskal(vector<tuple<int, int, int>> &E, int n){
                 dsu.unionByRank(u1, v1);
                 res += w1;
                 aristas++;
+                std::get<2>(E[i]) = 0;  //AT LEAST ONE
             }
         }
         
@@ -120,18 +163,30 @@ int main() {
 
     cin >> n >> m;
 
-    vector<tuple<int, int, int> > lAristas(m);
-    tuple<int, int, int> aux;
+    vector<tuple<int, int, int, int> > lAristas(m);
+    tuple<int, int, int, int> aux;
 
     for (int i = 0; i < m; i++)
     {
         cin >> u >>  v >> w;
-        aux = make_tuple(u, v, w);
+        aux = make_tuple(u, v, w, i);
         lAristas[i] = aux;
     }
 
     kruskal(lAristas, n);
+
+    sort(lAristas.begin(), lAristas.end(), compDePosicion);
     
-
-
+    //EN LA COMPONENTE CORRESPONDIENTE AL PESO 0 == ANY; 1 == AT LEAST ONE; 2 == NONE
+    for (int i = 0; i < (n - 1); i++)
+    {
+        if (std::get<2>(lAristas[i]) == 0)
+        {
+            cout << "any" << "\n";
+        }else if(std::get<2>(lAristas[i]) == 1){
+            cout << "at least one" << "\n";
+        }else{
+            cout << "none" << "\n";
+        }
+    }
 }
