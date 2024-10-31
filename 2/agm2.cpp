@@ -4,6 +4,28 @@
 using namespace std;
 
 
+bool compDePeso(tuple<int, int, int, int> &a, tuple<int, int, int, int> &b){
+
+    if (std::get<2>(a) <= std::get<2>(b))
+    {
+        return true;
+    }else{
+        return false;
+    }
+}
+
+
+bool compDePosicion(tuple<int, int, int, int> &a, tuple<int, int, int, int> &b){
+
+    if (std::get<3>(a) <= std::get<3>(b))
+    {
+        return true;
+    }else{
+        return false;
+    }
+}
+
+
 class DisjointSet {
 
     vector<int> rank, parent;
@@ -48,55 +70,71 @@ public:
     }
 };
 
-void crearGPrima(vector<tuple<int, int, int, int> E, int &i, DisjointSet &dsu){
 
-    set<pair<int, int>> lAdyacencias;
-    int u = std::get<0>(E[i]);
-    int v = std::get<1>(E[i]);
+void crearGPrima(vector<tuple<int, int, int, int> > &E, int &k, DisjointSet &disSet, int &aristas){
+
+    //it es cantidad de aristas con el mismo peso
     int it = 0;
-    while ( std::get<2>(E[i]) == std::get<2>(E[i + it]))
-    {
-        //Si tienen el mismo representante
-        if (dsu.findSet(u) == dsu.findSet(v))
-        {
-            std::get<2>(E[i]) = 2;  //ONE
-        }else{
-            lAdyacencias.insert(makepair<>);
-        }
 
+    while (std::get<2>(E[k]) == std::get<2>(E[k + it]))
+    {
         it++;
     }
-    it--;
+
+    //   u        v  indice
+    map<int, map<int, int>> lAdyacencias;
 
 
+    for (int i = 0; i < it; i++)
+    {
+        int u = std::get<0>(E[k + i]);
+        int v = std::get<1>(E[k + i]);
 
+        //G' tiene como nodos a los representantes de los nodos del grafo original
+        int repreU = disSet.findSet(u);
+        int repreV = disSet.findSet(v);
 
-    i = i + it;
+        //Si tienen el mismo representante
+        if (repreU == repreV)
+        {
+            std::get<2>(E[k + i]) = 2;  //NONE
+
+        }else{//Si tienen representantes distintos, meto sus representantes como nodos en el G'
+            map<int, int> aux1, aux2;
+
+            //   Si U todavia no esta en el grafo
+            if (lAdyacencias.find(repreU) == lAdyacencias.end())
+            {
+                aux1.insert(make_pair(repreV, (k + i)));
+                lAdyacencias.insert(make_pair(repreU, aux1));
+
+                aux2.insert(make_pair(repreU, (k + i)));
+                lAdyacencias.insert(make_pair(repreV, aux2));
+
+            }else{
+                //                           Si U no es adyacente a V
+                if (lAdyacencias.at(repreU).find(repreV) == lAdyacencias.at(repreU).end())
+                {
+                    aux1.insert(make_pair(repreV, (k + i)));
+                    lAdyacencias.insert(make_pair(repreU, aux1));
+
+                    aux2.insert(make_pair(repreU, (k + i)));
+                    lAdyacencias.insert(make_pair(repreV, aux2));
+
+                }else{
+                    //seteo a esta arista como AT LEAST ONE
+                    std::get<2>(E[k + i]) = 1;
+                    int aux = ((lAdyacencias.at(repreU)).at(repreV));
+                    std::get<2>(E[aux]) = 1;
+
+                }
+            }
+        }
+    }
     
-
-
-
+    k = k + it - 1;
 }
 
-bool compDePeso(tuple<int, int, int, int> &a, tuple<int, int, int, int> &b){
-
-    if (std::get<2>(a) <= std::get<2>(b))
-    {
-        return true;
-    }else{
-        return false;
-    }
-}
-
-bool compDePosicion(tuple<int, int, int, int> &a, tuple<int, int, int, int> &b){
-
-    if (std::get<3>(a) <= std::get<3>(b))
-    {
-        return true;
-    }else{
-        return false;
-    }
-}
 
 void kruskal(vector<tuple<int, int, int, int>> &E, int &n){
 
@@ -125,13 +163,15 @@ void kruskal(vector<tuple<int, int, int, int>> &E, int &n){
                 dsu.unionByRank(u1, v1);
                 res += w1;
                 aristas++;
-                std::get<2>(E[i]) = 0;  //AT LEAST ONE
+                //std::get<2>(E[i]) = 0;  //ANY
 
             //u y v estan en distinta componente conexa y la arista tiene igual peso a la siguiente
             }else if( (dsu.findSet(u1) != dsu.findSet(v1)) && (w1 == w2)){
-                //crear g'
-
-                //correr puentes en g'
+                //crear G'
+                crearGPrima(E, i, dsu, aristas);
+                // tiene que poder contar cuantas aristas van a ir en el arbol  
+                //aristas++;
+                //correr puentes en G'
             }
         }else{
             //u y v estan en distinta componente conexa?
@@ -139,18 +179,14 @@ void kruskal(vector<tuple<int, int, int, int>> &E, int &n){
                 dsu.unionByRank(u1, v1);
                 res += w1;
                 aristas++;
-                std::get<2>(E[i]) = 0;  //AT LEAST ONE
+                //std::get<2>(E[i]) = 0;  //AT LEAST ONE
             }
         }
-        
-
-        
 
         if(aristas == (n - 1)) break;
     }
     
-    if(aristas == (n - 1)) cout << res << '\n';
-    else cout << "IMPOSSIBLE\n";
+    cout << aristas << '\n';
 }
 
 int main() {
@@ -163,6 +199,7 @@ int main() {
 
     cin >> n >> m;
 
+                //u, v, peso, orden original en el que se metio
     vector<tuple<int, int, int, int> > lAristas(m);
     tuple<int, int, int, int> aux;
 
@@ -178,15 +215,17 @@ int main() {
     sort(lAristas.begin(), lAristas.end(), compDePosicion);
     
     //EN LA COMPONENTE CORRESPONDIENTE AL PESO 0 == ANY; 1 == AT LEAST ONE; 2 == NONE
-    for (int i = 0; i < (n - 1); i++)
+    for (int i = 0; i < m; i++)
     {
         if (std::get<2>(lAristas[i]) == 0)
         {
             cout << "any" << "\n";
         }else if(std::get<2>(lAristas[i]) == 1){
             cout << "at least one" << "\n";
-        }else{
+        }else if(std::get<2>(lAristas[i]) == 2){
             cout << "none" << "\n";
+        }else{
+            cout << "w" << "\n";
         }
     }
 }
