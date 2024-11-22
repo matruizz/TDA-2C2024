@@ -102,7 +102,7 @@ void crearGPrima(vector<tuple<int, int, int, int> > &E, int &k, DisjointSet &dis
         }else{//Si tienen representantes distintos, meto sus representantes como nodos en el G'
             map<int, int> aux1, aux2;
 
-            //   Si U todavia no esta en el grafo
+            //   Si repreU todavia no esta en el grafo
             if (lAdyacencias.find(repreU) == lAdyacencias.end())
             {
                 aux1.insert(make_pair(repreV, (k + i)));
