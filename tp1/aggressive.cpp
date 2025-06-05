@@ -1,3 +1,4 @@
+
  //Incluye la libreria standar completa... iostream, algorithm, vector
 #include <bits/stdc++.h>
 
@@ -5,22 +6,25 @@ using namespace std;
 
 int t = 0, n = 0, c = 0, minDistance = 1000000000, maxDistance = 0;
 
-bool cow(vector<int> &stalls, int cows, int minMaxDistance){
+bool cow(vector<int> &stalls, int &cows, int &minMaxDistance){
     
-    cows--;
+
+    int vacas = cows;
+
+    vacas--;
     
     int ult = 0, act = 0;
     
-    while ((act < stalls.size()) && (cows > 0))
+    while ((act < stalls.size()) && (vacas > 0))
     {
         if ((stalls[act] - stalls[ult]) >= minMaxDistance)
         {
             ult = act;
-            cows--;
+            vacas--;
         }
         act++;
     }
-    if (cows == 0)
+    if (vacas == 0)
     {
         return true;
     }
@@ -29,23 +33,28 @@ bool cow(vector<int> &stalls, int cows, int minMaxDistance){
     return false;
 }
 
-int aggresive(vector<int> &stalls, int cows){
+int aggresive(vector<int> &stalls, int &cows){
 
-    int minMaxDistance = int ((minDistance + maxDistance)/cows);
+    int minMaxDistance = (int) std::round(((minDistance + maxDistance) * 1.0) / 2);
 
-    while((minDistance + 1 )< maxDistance) {
+    while((minDistance + 1 ) < maxDistance) {
 
         if (cow(stalls, cows, minMaxDistance))
         {
             minDistance = minMaxDistance;
-            minMaxDistance = int ((minDistance + maxDistance)/cows);
         }else{
             maxDistance = minMaxDistance;
-            minMaxDistance = int ((minDistance + maxDistance) / cows);
         }
-    }
 
-    return (minMaxDistance + 1) * cow(stalls, cows, (minMaxDistance + 1)) + (minMaxDistance * !cow(stalls, cows, (minMaxDistance + 1)));
+        minMaxDistance = (int) std::round(((minDistance + maxDistance) * 1.0) / 2);
+    }
+    
+    if (cow(stalls, cows, minDistance))
+    {
+        return minDistance;
+    }else{
+        return minDistance - 1;
+    }
 }
 
 
@@ -56,6 +65,8 @@ int main() {
     cin.tie(0);
 
     cin >> t;
+
+    vector<int> res (t);
 
     for (int i = 0; i < t; i++)
     {
@@ -79,9 +90,14 @@ int main() {
         vector<int>::iterator finish = stalls.end();
         sort(start, finish);
 
-        cout << aggresive(stalls, c) << endl;
+        res[i] = aggresive(stalls, c);
 
         minDistance = 1000000000;
         maxDistance = 0;
     }
+    for (int i = 0; i < t; i++)
+    {
+        cout << res[i] << "\n";
+    }
+    
 }
