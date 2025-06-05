@@ -1,5 +1,5 @@
 # Ejercicios prácticos de técnicas de diseño de algoritmos 2C 2024.
-### Este repositorio esta destinado a mostrar soluciones a los trabajos prácticos de la materia ternicas de diseño de algoritmos de la carrera de ciencias de la computacion de la UBA.
+### Este repositorio esta destinado a mostrar soluciones a los trabajos prácticos de la materia tecnicas de diseño de algoritmos de la carrera de ciencias de la computacion de la UBA.
 
 ### Los cuales consitian en problemas de plataformas de programacion competitiva en los cuales se ejercitaba los temas vistos en las partes teorica y práctica de la materia.
 
