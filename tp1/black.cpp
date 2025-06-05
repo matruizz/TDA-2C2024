@@ -7,7 +7,17 @@ using namespace std;
 
 int dec(vector<int> v, int i, int anterior){
 
-
+    if (i == v.size())
+    {
+        return 0;
+    }else if (v[i] >= anterior)
+    {
+        return dec(v, (i + 1), anterior);
+    }else{
+        return max(dec(v, i + 1, v[i]) + 1, dec(v, i + 1, v[i]));
+    }
+    
+    
 
     return 0;
 }
@@ -15,7 +25,7 @@ int increasing(vector<int> v, int i, int anterior, vector<int> noPintados){
 
     if (i == v.size())
     {
-        return 0; //dec(noPintados, 0, 100);
+        return dec(noPintados, 0, 100);
     }else if ((v[i] <= anterior))
     {
         return increasing(v, (i + 1), anterior, noPintados);
@@ -29,40 +39,6 @@ int increasing(vector<int> v, int i, int anterior, vector<int> noPintados){
     }
 }
 
-/*
-int increasing(vector<pair<int, int>> &v, int i, int anterior){
-
-    if (i == v.size())
-    {
-        return 0;//dec(noPintados, 0, 100);
-    }else if ((v[i].first <= anterior) || (v[i].second == 1))
-    {
-        return increasing(v, (i + 1), anterior);
-    }else{
-        //i++;            //INCREMENTO I PORQUE PASO POR PARAMETRO
-        vector<pair<int, int>> copia = v;
-        int noPinto = increasing(v, (i + 1), anterior);// i == i + 1
-
-        v[i].second = 1;
-        int pinto = increasing(v, (i + 1), v[i].first) + 1;
-        
-        if (noPinto > pinto)
-        {
-            v[i].second = 0;
-            return noPinto;
-        }
-        return pinto;
-    }
-}
-
-int black(vector<pair<int, int>> v){
-
-    int inc = increasing(v, 0, -1);
-    cout << inc << endl;
-
-    return 0;
-}
-*/
 
 
 
@@ -95,11 +71,13 @@ int main() {
 
         cin >> n;
     }
-    //black(datos[0]);
+
+
     vector<int> v = {2, 3, 4, 10, 5, 6, 1};
     vector<int> vacio;
     int res = increasing(v, 0, -1, vacio);
     cout << res << endl;
+
 
     for (int i = 0; i < datos.size(); i++)
     {
