@@ -45,7 +45,6 @@ void floyd(vector<vector<ll>> &m){
     }
 }
 
-//WRONG ANSWER IN TEST 30
 
 int main() {
 

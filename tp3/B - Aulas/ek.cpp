@@ -159,6 +159,8 @@ int main(){
 
     ll s = (2*n);
     ll t = (2*n) + 1;
+
+    //Implementación de Edmons y Karp sacada de: https://cp-algorithms.com/graph/edmonds_karp.html
     res = maxflow(s, t, adj, capacity);
 
     if (res != sumAlumnos)
