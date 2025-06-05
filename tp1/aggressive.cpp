@@ -7,14 +7,13 @@ using namespace std;
 int t = 0, n = 0, c = 0, minDistance = 1000000000, maxDistance = 0;
 
 bool cow(vector<int> &stalls, int &cows, int &minMaxDistance){
-    
 
     int vacas = cows;
 
     vacas--;
-    
+
     int ult = 0, act = 0;
-    
+
     while ((act < stalls.size()) && (vacas > 0))
     {
         if ((stalls[act] - stalls[ult]) >= minMaxDistance)
@@ -29,32 +28,18 @@ bool cow(vector<int> &stalls, int &cows, int &minMaxDistance){
         return true;
     }
     
-
     return false;
 }
 
 int aggresive(vector<int> &stalls, int &cows){
 
-    int minMaxDistance = (int) std::round(((minDistance + maxDistance) * 1.0) / 2);
+    int aux = 1;
 
-    while((minDistance + 1 ) < maxDistance) {
-
-        if (cow(stalls, cows, minMaxDistance))
-        {
-            minDistance = minMaxDistance;
-        }else{
-            maxDistance = minMaxDistance;
-        }
-
-        minMaxDistance = (int) std::round(((minDistance + maxDistance) * 1.0) / 2);
+    while(cow(stalls, cows, aux)) {
+        aux++;
     }
-    
-    if (cow(stalls, cows, minDistance))
-    {
-        return minDistance;
-    }else{
-        return minDistance - 1;
-    }
+    aux--;
+    return aux;
 }
 
 
@@ -65,7 +50,7 @@ int main() {
     cin.tie(0);
 
     cin >> t;
-
+    
     vector<int> res (t);
 
     for (int i = 0; i < t; i++)
@@ -97,7 +82,7 @@ int main() {
     }
     for (int i = 0; i < t; i++)
     {
-        cout << res[i] << "\n";
+        cout << res[i] << endl;
     }
     
 }
