@@ -29,56 +29,22 @@ int f(vector<vector<vector<int> > > &m, vector<int> &v, int i, int inc, int dec)
 
         return m[i][inc + 1][dec + 1];
 
-    }else if ((inc == -1) && (dec == -1))//-----//Si los dos estan vacios------------
-    {
-
+    }else if((v[inc] < v[i]) && (v[dec] <= v[i])){   //Solo puede entrar en increasing
+            
+        m[i][inc + 1][dec + 1] = max(f(m, v, i + 1, i, dec) + 1, f(m, v, i + 1, inc, dec));
+        return m[i][inc + 1][dec + 1];
+    }else if((v[dec] > v[i]) && (v[inc] >= v[i])){   //Solo pude entrar en decreasing
+        
+        m[i][inc + 1][dec + 1] = max(f(m, v, i + 1, inc, i) + 1, f(m, v, i + 1, inc, dec));
+        return m[i][inc + 1][dec + 1];
+    
+    }else if((v[inc] >= v[i]) && (v[dec] <= v[i])){ //No puede entrar en ninguno
+        m[i][inc + 1][dec + 1] = f(m, v, i + 1, inc, dec);
+        return m[i][inc + 1][dec + 1];
+    }else{
+    
         m[i][inc + 1][dec + 1] = maximo(f(m, v, i + 1, i, dec) + 1, f(m, v, i + 1, inc, i) + 1, f(m, v, i + 1, inc, dec));
         return m[i][inc + 1][dec + 1];
-
-    }else if ((inc == -1) && (dec != -1))//-----//Si solo inc esta vacio-------------
-    {
-        if (v[dec] <= v[i])  //No puede entrar en dec
-        {
-            m[i][inc + 1][dec + 1] = max(f(m, v, i + 1, i, dec) + 1, f(m, v, i + 1, inc, dec));
-            return m[i][inc + 1][dec + 1];
-        }else{              //Puede entrar en dec
-
-            m[i][inc + 1][dec + 1] = maximo(f(m, v, i + 1, i, dec) + 1, f(m, v, i + 1, inc, i) + 1, f(m, v, i + 1, inc, dec));
-            return m[i][inc + 1][dec + 1];
-        }
-    }else if((inc != -1) && (dec == -1))//------//Si solo dec esta vacio--------------
-    {
-        if (v[inc] >= v[i]) //No puede entrar en inc
-        {
-            m[i][inc + 1][dec + 1] = max(f(m, v, i + 1, inc, i) + 1, f(m, v, i + 1, inc, dec));
-            return m[i][inc + 1][dec + 1];
-        }else{             //Puede entrar en dec
-
-            m[i][inc + 1][dec + 1] = maximo(f(m, v, i + 1, i, dec) + 1, f(m, v, i + 1, inc, i) + 1, f(m, v, i + 1, inc, dec));
-            return m[i][inc + 1][dec + 1];
-        }
-    }else if ((inc != -1) && (dec != -1))//-----//Si ninguno esta vacio---------------
-    {
-        if((v[inc] < v[i]) && (v[dec] <= v[i])){   //Solo puede entrar en increasing
-            
-            m[i][inc + 1][dec + 1] = max(f(m, v, i + 1, i, dec) + 1, f(m, v, i + 1, inc, dec));
-            return m[i][inc + 1][dec + 1];
-
-        }else if((v[dec] > v[i]) && (v[inc] >= v[i])){   //Solo pude entrar en decreasing
-            
-            m[i][inc + 1][dec + 1] = max(f(m, v, i + 1, inc, i) + 1, f(m, v, i + 1, inc, dec));
-            return m[i][inc + 1][dec + 1];
-        
-        }else if((v[inc] >= v[i]) && (v[dec] <= v[i])){ //No puede entrar en ninguno
-
-            m[i][inc + 1][dec + 1] = f(m, v, i + 1, inc, dec);
-            return m[i][inc + 1][dec + 1];
-
-        }else{
-        
-            m[i][inc + 1][dec + 1] = maximo(f(m, v, i + 1, i, dec) + 1, f(m, v, i + 1, inc, i) + 1, f(m, v, i + 1, inc, dec));
-            return m[i][inc + 1][dec + 1];
-        }
     }
 }
 
