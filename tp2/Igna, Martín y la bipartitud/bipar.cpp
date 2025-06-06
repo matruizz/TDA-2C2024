@@ -4,21 +4,20 @@
 
 using namespace std;
 
-vector<pair<uint64_t, uint64_t>> listaDeAristas;
+long long int j;
 
-int j;
 
-bool existeJQueNoEstaEnPila(set<int> elementosEnPila, set<int> adyacentesAi, int *orden){
+bool existeJQueNoEstaEnqueue(unordered_set<long long int> &elementosEnQueue, set<long long int> &adyacentesAi, vector<long long int> &orden){
 
-    set<int>::iterator adyacente = adyacentesAi.begin();
+    set<long long int>::iterator adyacente = adyacentesAi.begin();
     bool res = false;
-    //                                                       si esta en la pila                                  ya fue recorrido
-    while ((adyacente != adyacentesAi.end()) && ((elementosEnPila.find(*adyacente) != elementosEnPila.end()) || (orden[*adyacente] != -1)))
+    //  Si no llegue al final de los vecinos de i    y      (si esta en la queue           o         ya fue recorrido)
+    while ((adyacente != adyacentesAi.end()) && ((elementosEnQueue.count(*adyacente) != 0) || (orden[*adyacente] != -1)))
     {
         adyacente++;
     }
 
-    if (adyacente != adyacentesAi.end() && (elementosEnPila.find(*adyacente) == elementosEnPila.end()) && (orden[*adyacente] == -1))
+    if ((adyacente != adyacentesAi.end()) && (elementosEnQueue.count(*adyacente) == 0) && (orden[*adyacente] == -1))
     {
         j = *adyacente;
         res = true;
@@ -27,104 +26,36 @@ bool existeJQueNoEstaEnPila(set<int> elementosEnPila, set<int> adyacentesAi, int
     return res;
 }
 
-
-void dfs(map<int, set<int>> &lAdya, int *pred, int *orden, int *desde, int *hasta){
-
-    //Salida: pred[i] = padre de vi , orden[i] = numero asignado a vi
-    int next = 1;
-    int timer = 0;
-    int r = 1;              // Elegir un vertice 1 como raiz
-    
-    pred[r] = 0;            // El predecesor de la raiz es el 0
-    
-    orden[r] = next;        // Numero de orden de la raiz
-    
-    stack<int> pila;        // Defino la pila para hacer DFS
-    set<int> copiaPila;     // Creo una copia de la pila para poder encontrar adyacentes a i que no esten en la pila
-
-    pila.push(1);           // Meto la raiz dentro de la pila
-    copiaPila.insert(1);    // Hago lo mismo para la copia
-    timer++;
-    desde[r] = timer;
-    
-    while (!pila.empty())   // Mientras que la pila no este vacia
-    {
-        int i = pila.top(); // Elijo un nodo i de la PILA
-
-        //Si existe un arco (i, j) tal que j /∈ PILA entonces
-        if (existeJQueNoEstaEnPila(copiaPila, lAdya.at(i), pred))   //Si un j adyacente a i no esta en la pila
-        {
-            timer++;
-            desde[j] = timer;
-            pred[j] = i;        //pred[j] ← i (marcar vertice j)
-
-            next++;             //next ← next + 1
-            orden[j] = next;    //orden[j] ← next
-            pila.push(j);       //LISTA ← LISTA ∪ {j}
-            copiaPila.insert(j);
-        }else{
-            timer++;
-            hasta[i] = timer; 
-            pila.pop();
-            copiaPila.erase(i);
-        }
-    }
-    
-    //retornar pred y orden
-}
-
-
-bool existeJQueNoEstaEnCola(set<int> elementosEnCola, set<int> adyacentesAi, int *orden){
-
-    set<int>::iterator adyacente = adyacentesAi.begin();
-    bool res = false;
-    //                                                       si esta en la cola                                  ya fue recorrido
-    while ((adyacente != adyacentesAi.end()) && ((elementosEnCola.find(*adyacente) != elementosEnCola.end()) || (orden[*adyacente] != -1)))
-    {
-        adyacente++;
-    }
-
-    if (adyacente != adyacentesAi.end() && (elementosEnCola.find(*adyacente) == elementosEnCola.end()) && (orden[*adyacente] == -1))
-    {
-        j = *adyacente;
-        res = true;
-    }
-
-    return res;
-}
-
-void bfs(map<int, set<int>> &lAdya, int *pred, int *orden){
+void bfs(unordered_map<long long int, set<long long int>> &lAdya, vector<long long int> &orden, vector<long long int> &dist){
 
     //Salida: pred[i] = padre de vi , orden[i] = numero asignado a vi
-    int ord = 1;
+    long long int ord = 1;
     
-    int r = 1;              // Elegir un vertice 1 como raiz
+    long long int r = 1;              // Elegir un vertice 1 como raiz
     
-    pred[r] = 0;            // El predecesor de la raiz es el 0
+    orden[r] = ord;         // Numero de orden de la raiz
     
-    orden[r] = ord;        // Numero de orden de la raiz
-    
-    queue<int> cola;        // Defino la cola para hacer DFS
-    set<int> copiaCola;     // Creo una copia de la cola para poder encontrar adyacentes a i que no esten en la cola
+    queue<long long int> queue;        // Defino la queue para hacer BFS
+    unordered_set<long long int> copiaQueue;     // Creo una copia de la queue para poder encontrar adyacentes a i que no esten en la queue
 
-    cola.push(1);           // Meto la raiz dentro de la cola
-    copiaCola.insert(1);    // Hago lo mismo para la copia
+    queue.push(r);           // Meto la raiz dentro de la queue O(1)
+    copiaQueue.insert(r);    // Hago lo mismo para la copia     O(1)
     
-    while (!cola.empty())   // Mientras que la cola no este vacia
+    while (!queue.empty())   // Mientras que la queue no este vacia
     {
-        int i = cola.front(); // Elijo un nodo i de la cola
+        long long int i = queue.front(); // Elijo un nodo i de la queue   O(1)
 
-        //Si existe un arco (i, j) tal que j /∈ cola entonces
-        if (existeJQueNoEstaEnCola(copiaCola, lAdya.at(i), pred))   //Si un j adyacente a i no esta en la cola
+        //Si existe un arco (i, j) tal que j /∈ queue entonces
+        if (existeJQueNoEstaEnqueue(copiaQueue, lAdya.at(i), orden))   //Si un j adyacente a i no esta en la queue
         {
-            pred[j] = i;        //pred[j] ← i (marcar vertice j)
+            dist[j] = dist[i] + 1;
             ord++;             //ord ← ord + 1
             orden[j] = ord;    //orden[j] ← ord
-            cola.push(j);       //LISTA ← LISTA ∪ {j}
-            copiaCola.insert(j);
+            queue.push(j);       //LISTA ← LISTA ∪ {j}
+            copiaQueue.insert(j);
         }else{
-            cola.pop();
-            copiaCola.erase(i);
+            queue.pop();
+            copiaQueue.erase(i);
         }
     }
 }
@@ -132,42 +63,41 @@ void bfs(map<int, set<int>> &lAdya, int *pred, int *orden){
 
 int main() {
 
-    uint64_t n, u, v;
+    long long int n, u, v;
 
-    cout << "Ingrese cantidad de nodos:";
-    cin >> n;
-
-    vector<pair<uint64_t,uint64_t>> listaDeAristas(n);
+    cin >> n;    
     
-    map<int, set<int>> listaAdyacencias;
-    for (int i = 0; i < n; i++)
+    unordered_map<long long int, set<long long int>> listaAdyacencias;
+    for (long long int i = 0; i < n; i++)                                         //O(n.log(n))
     {
-        listaAdyacencias.insert(make_pair<int, set<int>>((i+1), {}));
+        listaAdyacencias.insert(make_pair<long long int, set<long long int>>((i+1), {}));   //O(log(n))
     }
-    
-    int pred [(n + 1)];
-    int orden [(n + 1)];
-    int predBFS [(n + 1)];
-    int ordenBFS [(n + 1)];
-    int desde[(n + 1)];
-    int hasta[(n + 1)];
-    for (int i = 0; i < (n + 1); i++)
+
+    vector<long long int> orden (n + 1);
+    for (long long int i = 0; i < (n + 1); i++)
     {
-        pred[i] = -1;
         orden[i] = -1;
-        predBFS[i] = -1;
-        ordenBFS[i] = -1;
-        desde[i] = -1;
-        hasta[i] = -1;
+    }
+
+    vector<long long int> dist (n + 1);
+    for (long long int i = 1; i < (n + 1); i++)
+    {
+        if (i != 1)
+        {
+            dist[i] = -1;
+        }else{
+            dist[i] = 0;
+        }
     }
     
-    cout << "Solo funciona para arboles, por lo tanto solo recibe (n - 1) aristas." << endl;
+
+    //Solo funciona para arboles, por lo tanto solo recibe (n - 1) aristas.
 
     if (n <= 1)
     {
         cout << 0 << "\n";
     }else{
-        for (uint64_t i = 0; i < (n - 1); i++)
+        for (long long int i = 0; i < (n - 1); i++)       //O(n.log(n))
         {
             cin >> u >> v;
             listaAdyacencias.at(u).insert(v);
@@ -175,62 +105,18 @@ int main() {
         }
 
         //Solo reciben arboles
-        dfs(listaAdyacencias, pred, orden, desde, hasta);
-        bfs(listaAdyacencias, predBFS, ordenBFS);
+        bfs(listaAdyacencias, orden, dist);
 
+        long long int count = 0;
 
-        //Predecesores
-        cout << "Predecesores DFS: ";
-        for (int i = 1; i < (n + 1); i++)
+        for (long long int i = 1; i < (n + 1); i++)
         {
-            cout << pred[i];
-            if (i != n)
-            {
-                cout << ", ";
-            }else{
-                cout << ".";
+            if((dist[i] % 2) == 0){
+                count++;
             }
         }
-        cout << endl;
-        //Orden
-        cout << "Orden DFS: ";
-        for (int i = 1; i < (n + 1); i++)
-        {
-            cout << orden[i];
-            if (i != n)
-            {
-                cout << ", ";
-            }else{
-                cout << ".";
-            }
-        }
-        cout << endl;
-        //Predecesores BFS
-        cout << "Predecesores BFS: ";
-        for (int i = 1; i < (n + 1); i++)
-        {
-            cout << predBFS[i];
-            if (i != n)
-            {
-                cout << ", ";
-            }else{
-                cout << ".";
-            }
-        }
-        cout << endl;
-        //Orden BFS
-        cout << "Orden BFS: ";
-        for (int i = 1; i < (n + 1); i++)
-        {
-            cout << ordenBFS[i];
-            if (i != n)
-            {
-                cout << ", ";
-            }else{
-                cout << ".";
-            }
-        }
-        cout << endl;
+
+        cout << ((n - count) * count) - (n - 1);
 
     }
 }
