@@ -3,20 +3,20 @@
  
 using namespace std;
  
-int t = 0, n = 0, c = 0, minDistance = 1000000000, maxDistance = 0;
+int t = 0, n = 0, c = 0, minDistance = 1000000001, maxDistance = -1;
  
-bool cow(vector<int> &stalls, int &cows, int &minMaxDistance){
-    
- 
+bool stallsForAllCowsWithThisMaxMin(vector<int> &stallsPositions, int &cows, int &maxMinDistance){
+
+
     int vacas = cows;
- 
+
     vacas--;
-    
+
     int ult = 0, act = 0;
-    
-    while ((act < stalls.size()) && (vacas > 0))
+
+    while ((act < stallsPositions.size()) && (vacas > 0))
     {
-        if ((stalls[act] - stalls[ult]) >= minMaxDistance)
+        if ((stallsPositions[act] - stallsPositions[ult]) >= maxMinDistance)
         {
             ult = act;
             vacas--;
@@ -27,28 +27,32 @@ bool cow(vector<int> &stalls, int &cows, int &minMaxDistance){
     {
         return true;
     }
-    
- 
+
+
     return false;
 }
  
-int aggresive(vector<int> &stalls, int &cows){
- 
-    int minMaxDistance = (int) std::round(((minDistance + maxDistance) * 1.0) / 2);
+int aggresive(vector<int> &stallsPositions, int &cows){
+    //Hay que elegir la distancia media como la maxima distancia media porque en este problema eso equivale a
+    //empezar la busqueda binaria por el valor medio, si en cambio eligieramos la distancia entre el maximo y 
+    //el minimo como la maxima distancia minima eso equivaldria a empezar la busqueda binaria por el maximo 
+    //del conjunto de elementos a buscar en lugar de empezar a buscar por el valor medio lo cual empeora la
+    //complejidad temporal de la busqueda binaria.
+    int maxMinDistance = (int) std::round(((minDistance + maxDistance) * 1.0) / 2);
  
     while((minDistance + 1 ) < maxDistance) {
  
-        if (cow(stalls, cows, minMaxDistance))
+        if (stallsForAllCowsWithThisMaxMin(stallsPositions, cows, maxMinDistance))
         {
-            minDistance = minMaxDistance;
+            minDistance = maxMinDistance;
         }else{
-            maxDistance = minMaxDistance;
+            maxDistance = maxMinDistance;
         }
  
-        minMaxDistance = (int) std::round(((minDistance + maxDistance) * 1.0) / 2);
+        maxMinDistance = (int) std::round(((minDistance + maxDistance) * 1.0) / 2);
     }
     
-    if (cow(stalls, cows, minDistance))
+    if (stallsForAllCowsWithThisMaxMin(stallsPositions, cows, minDistance))
     {
         return minDistance;
     }else{
@@ -69,30 +73,31 @@ int main() {
  
     for (int i = 0; i < t; i++)
     {
-        cin >> n >> c;
+        cin >> n >> c;  //n: number of stalls; c: number of cows
  
-        vector<int> stalls(n);
+        vector<int> stallsPositions(n);
  
         for (int j = 0; j < n; j++)
         {
-            cin >> stalls[j];
+            cin >> stallsPositions[j];
  
-            if (stalls[j] > maxDistance)
+            if (stallsPositions[j] > maxDistance)
             {
-                maxDistance = stalls[j];
+                maxDistance = stallsPositions[j];
             }
-            if(stalls[j] < minDistance){
-                minDistance = stalls[j];
+            if(stallsPositions[j] < minDistance){
+                minDistance = stallsPositions[j];
             }
         }
-        vector<int>::iterator start = stalls.begin();
-        vector<int>::iterator finish = stalls.end();
+
+        vector<int>::iterator start = stallsPositions.begin();
+        vector<int>::iterator finish = stallsPositions.end();
         sort(start, finish);
  
-        res[i] = aggresive(stalls, c);
+        res[i] = aggresive(stallsPositions, c);
  
-        minDistance = 1000000000;
-        maxDistance = 0;
+        minDistance = 1000000001;
+        maxDistance = -1;
     }
     for (int i = 0; i < t; i++)
     {
