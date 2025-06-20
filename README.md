@@ -11,4 +11,4 @@ Luego, **para ejecutar** el código debe escribir en la terminal:
 
 **./nombreDelEjecutable**
 
-Luego debe **presionar "Enter"** y debe **pegar en la terminal** los **datos de entrada** del ejercicio los cuales son provistos en el readme de la carpeta, en donde también encontrará el **enunciado** del problema y una breve **descripción de la solución** implementada en el código.
+Luego debe **presionar "Enter"** y debe **pegar en la terminal** los **datos de entrada** del ejercicio los cuales son provistos en el **enunciado** del problema que encontrará misma carpeta del código fuente junto con un readme que contiene una breve **descripción de la solución** implementada en el código.
