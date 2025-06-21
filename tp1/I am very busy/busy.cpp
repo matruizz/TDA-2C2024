@@ -46,7 +46,7 @@ int main() {
  
         for (int j = 0; j < n; j++)
         {
-            //0 <= start < end <= 1000000
+            //0 <= start < finish <= 1000000
             int s, f;
             cin >> s >> f;
  
@@ -56,7 +56,7 @@ int main() {
         vector<pair<int, int> >::iterator inicio = testCase[i].begin();
         vector<pair<int, int> >::iterator fin = testCase[i].end();
  
-        sort(inicio, fin, comp);
+        sort(inicio, fin, comp);    //Ordeno de menor a mayor con respecto al tiempo de fin de la actividad.
     }
  
     cout << endl;
