@@ -1,6 +1,8 @@
-## Explicación de mi solución
+## Explicación de mi solución aplicando Dividir y Conquistar
 
-Primero, realizamos la **entrada de datos**, luego **ordenamos el arreglo de posiciones** de establos de menor a mayor, luego aplicamos el algoritmo de **busqueda binaria** a la máxima distancia mínima entre dos vacas.
+La idea detrás de este problema es ver la aplicación de la **técnica de diseño de algoritmos** llamada **dividir y conquistar**, la forma de encontrar la **mejor solución** a este problema es **dividir el problema** en problemas mas chicos que se puedan resolver mas **rápido y fácil** que el problema original y **cuyas soluciones se puedan unir** con las demás soluciones de subproblemas de **manera eficiente** para armar la solución del problema original, con un **pequeño detalle extra** que se explica mas adelante en este readme.
+
+Primero, realizamos la **entrada de datos**, luego **ordenamos el arreglo de posiciones** de establos de menor a mayor, luego aplicamos el algoritmo de **búsqueda binaria** a la máxima distancia mínima entre dos vacas.
 
 La **implementación que realicé** es algo así, **si para una** determinada **distancia mínima es posible colocar a todas las vacas en un establo**, entonces probamos con una **distancia mínima mas grande** porque estamos buscando la máxima distancia mínima, en cambio **si no entraron todas** las vacas en un establo para esa distancia mínima tenemos que **probar una distancia más chica**, esto es simplemente **aplicar búsqueda binaria a la máxima distancia mínima**. 
 
