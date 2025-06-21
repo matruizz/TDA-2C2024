@@ -1,0 +1,7 @@
+*.i
+*.asm
+*.o
+*.vscode
+*.gdb_history
+*main
+a
